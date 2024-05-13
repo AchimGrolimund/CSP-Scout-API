@@ -6,8 +6,7 @@ import (
 	"github.com/vipul-rawat/gofr-mongo"
 	"gofr.dev/pkg/gofr"
 	"log"
-	"net/http"
-	_ "net/http/pprof"
+	//_ "net/http/pprof"
 )
 
 var (
@@ -16,9 +15,10 @@ var (
 )
 
 func main() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
+	//
+	//go func() {
+	//	log.Println(http.ListenAndServe("localhost:6060", nil))
+	//}()
 
 	// Print the version and build number
 	log.Printf("Version: %s\n", Version)
