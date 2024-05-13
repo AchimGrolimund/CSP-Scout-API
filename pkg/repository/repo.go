@@ -29,7 +29,7 @@ func (r *ReportRepository) FindOne(ctx *gofr.Context) (domain.Report, error) {
 func (r *ReportRepository) FindAll(ctx *gofr.Context) ([]domain.Report, error) {
 	var results []domain.Report
 
-	err := ctx.Mongo.Find(ctx, "reports", bson.M{"report.violateddirective": "connect-src"} /* valid filter */, &results)
+	err := ctx.Mongo.Find(ctx, "reports", bson.M{} /* valid filter */, &results)
 	if err != nil {
 		return nil, err
 	}
