@@ -14,6 +14,7 @@ type ReportData struct {
 	ScriptSample       string `bson:"scriptsample" json:"scriptsample"`
 	ClientIP           string `bson:"clientip" json:"clientip"`
 	UserAgent          string `bson:"useragent" json:"useragent"`
+	ReportTime         int    `bson:"_time" json:"_time"`
 }
 
 type Report struct {
