@@ -3,7 +3,7 @@ module github.com/AchimGrolimund/CSP-Scout-API
 go 1.22.2
 
 require (
-	github.com/vipul-rawat/gofr-mongo v0.1.1
+	github.com/vipul-rawat/gofr-mongo v0.2.0
 	go.mongodb.org/mongo-driver v1.15.0
 	gofr.dev v1.6.0
 )
