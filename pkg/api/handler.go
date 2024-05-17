@@ -52,6 +52,11 @@ func (h *Handler) FindByTimeGT(ctx *gofr.Context) (interface{}, error) {
 	return h.reportRepo.FindByTimeGT(ctx, time)
 }
 
+func (h *Handler) FindByUserAgent(ctx *gofr.Context) (interface{}, error) {
+	user_agent := ctx.Request.Param("ua")
+	return h.reportRepo.FindByUserAgent(ctx, user_agent)
+}
+
 func (h *Handler) FindAll(ctx *gofr.Context) (interface{}, error) {
 	return h.reportRepo.FindAll(ctx)
 }

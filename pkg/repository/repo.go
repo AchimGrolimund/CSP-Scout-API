@@ -73,6 +73,19 @@ func (r *ReportRepository) FindByTimeGT(ctx *gofr.Context, time int) ([]domain.R
 	return results, nil
 }
 
+func (r *ReportRepository) FindByUserAgent(ctx *gofr.Context, user_agent string) ([]domain.Report, error) {
+	var results []domain.Report
+
+	filter := bson.M{"report.useragent": user_agent}
+
+	err := ctx.Mongo.Find(ctx, "reports", filter, &results)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}	
+
 // FindAll returns all reports
 func (r *ReportRepository) FindAll(ctx *gofr.Context) ([]domain.Report, error) {
 	var results []domain.Report
