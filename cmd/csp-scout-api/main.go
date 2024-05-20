@@ -41,6 +41,7 @@ func main() {
 	app.GET("/reportbyid", handler.FindByID)
 	app.GET("/reportsbytimelt", handler.FindByTimeLT)
 	app.GET("/reportsbytimegt", handler.FindByTimeGT)
+	app.GET("/reportsbyuseragent", handler.FindByUserAgent)
 
 	app.Run()
 }
