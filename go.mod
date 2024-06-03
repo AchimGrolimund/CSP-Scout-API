@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	github.com/vipul-rawat/gofr-mongo v0.1.1
 	go.mongodb.org/mongo-driver v1.15.0
-	gofr.dev v1.7.0
+	gofr.dev v1.8.0
 )
 
 // replace github.com/vipul-rawat/gofr-mongo v0.2.0 => github.com/AchimGrolimund/gofr-mongo v0.0.0-20240510184352-afe22ad7efb8
