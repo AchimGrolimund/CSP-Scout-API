@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/domain"
-	"github.com/vipul-rawat/gofr-mongo"
+	"gofr.dev/pkg/gofr/datasource/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gofr.dev/pkg/gofr"

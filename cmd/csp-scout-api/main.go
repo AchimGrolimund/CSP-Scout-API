@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/api"
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/repository"
-	"github.com/vipul-rawat/gofr-mongo"
+	"gofr.dev/pkg/gofr/datasource/mongo"
 	"gofr.dev/pkg/gofr"
 	"log"
 	//_ "net/http/pprof"
@@ -27,11 +27,11 @@ func main() {
 	app := gofr.New()
 
 	// using the mongo driver from `vipul-rawat/gofr-mongo`
-	db := mongo.New(app.Config, app.Logger(), app.Metrics())
+	db := mongo.New(mongo.Config{URI: "mongodb://root:toor@10.90.0.10:27017/", Database: "csp-report"})
 
 	// inject the mongo into gofr to use mongoDB across the application
 	// using gofr context
-	app.UseMongo(db)
+	app.AddMongo(db)
 
 	reportRepo := repository.NewReportRepository(db)
 	handler := api.NewHandler(reportRepo)
