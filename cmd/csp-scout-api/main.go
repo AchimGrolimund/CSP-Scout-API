@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/api"
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/repository"
-	"gofr.dev/pkg/gofr/datasource/mongo"
 	"gofr.dev/pkg/gofr"
+	"gofr.dev/pkg/gofr/datasource/mongo"
 	"log"
 	//_ "net/http/pprof"
 )
