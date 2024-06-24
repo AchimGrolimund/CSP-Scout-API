@@ -4,7 +4,7 @@ go 1.22.4
 
 require (
 	go.mongodb.org/mongo-driver v1.15.0
-	gofr.dev v1.9.0
+	gofr.dev v1.11.0
 	gofr.dev/pkg/gofr/datasource/mongo v0.0.0-20240613065257-64c443c61684
 )
 
@@ -40,7 +40,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.4 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
-	github.com/gorilla/websocket v1.5.2 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
