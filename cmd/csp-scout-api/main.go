@@ -4,19 +4,17 @@ import (
 	"log"
 	"os"
 
-
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/application"
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/infrastructure/mongodb"
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/interfaces/http/handlers"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/gin-contrib/cors"
 )
 
 var (
-	Build = "raw"
+	Build   = "raw"
 	Version = "raw"
-
 )
 
 func main() {

@@ -21,5 +21,5 @@ type ReportData struct {
 
 type Report struct {
 	ID     primitive.ObjectID `bson:"_id" json:"_id"`
-	Report ReportData        `bson:"report" json:"report"`
+	Report ReportData         `bson:"report" json:"report"`
 }

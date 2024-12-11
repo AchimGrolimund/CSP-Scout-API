@@ -42,12 +42,12 @@ func NewMongoRepository(uri, database, collection string) (*MongoRepository, err
 
 func (r *MongoRepository) Create(ctx context.Context, report domain.Report) error {
 	collection := r.client.Database(r.database).Collection(r.collection)
-	
+
 	_, err := collection.InsertOne(ctx, report)
 	if err != nil {
 		return fmt.Errorf("failed to insert report: %v", err)
 	}
-	
+
 	return nil
 }
 
