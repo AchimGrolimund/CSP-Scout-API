@@ -1,5 +1,7 @@
 package domain
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type ReportData struct {
 	DocumentUri        string `bson:"documenturi" json:"documenturi"`
 	Referrer           string `bson:"referrer" json:"referrer"`
@@ -18,6 +20,6 @@ type ReportData struct {
 }
 
 type Report struct {
-	ID     string     `bson:"_id" json:"_id"`
-	Report ReportData `bson:"report" json:"report"`
+	ID     primitive.ObjectID `bson:"_id" json:"_id"`
+	Report ReportData        `bson:"report" json:"report"`
 }

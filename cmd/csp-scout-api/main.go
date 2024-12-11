@@ -1,47 +1,61 @@
 package main
 
 import (
-	"github.com/AchimGrolimund/CSP-Scout-API/pkg/api"
-	"github.com/AchimGrolimund/CSP-Scout-API/pkg/repository"
-	"gofr.dev/pkg/gofr"
-	"gofr.dev/pkg/gofr/datasource/mongo"
 	"log"
-	//_ "net/http/pprof"
+	"os"
+
+
+	"github.com/AchimGrolimund/CSP-Scout-API/pkg/application"
+	"github.com/AchimGrolimund/CSP-Scout-API/pkg/infrastructure/mongodb"
+	"github.com/AchimGrolimund/CSP-Scout-API/pkg/interfaces/http/handlers"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"github.com/gin-contrib/cors"
 )
 
 var (
-	Build   = "raw"
+	Build = "raw"
 	Version = "raw"
+
 )
 
 func main() {
-	//
-	//go func() {
-	//	log.Println(http.ListenAndServe("localhost:6060", nil))
-	//}()
+	// Load environment variables
+	if err := godotenv.Load("configs/.local.env"); err != nil {
+		log.Printf("Warning: .env file not found: %v", err)
+	}
 
-	// Print the version and build number
-	log.Printf("Version: %s\n", Version)
-	log.Printf("Build: %s\n", Build)
+	// MongoDB configuration
+	mongoURI := getEnv("MONGODB_URI", "mongodb://localhost:27017")
+	dbName := getEnv("MONGODB_DATABASE", "csp_scout")
+	collectionName := getEnv("MONGODB_COLLECTION", "reports")
 
-	app := gofr.New()
+	// Initialize MongoDB repository
+	repo, err := mongodb.NewMongoRepository(mongoURI, dbName, collectionName)
+	if err != nil {
+		log.Fatalf("Failed to connect to MongoDB: %v", err)
+	}
 
-	// using the mongo driver from `vipul-rawat/gofr-mongo`
-	db := mongo.New(mongo.Config{URI: "mongodb://root:toor@10.90.0.10:27017/", Database: "csp-report"})
+	// Create service and handler
+	service := application.NewReportService(repo)
+	handler := handlers.NewReportHandler(service)
 
-	// inject the mongo into gofr to use mongoDB across the application
-	// using gofr context
-	app.AddMongo(db)
+	// Initialize Gin router
+	router := gin.Default()
 
-	reportRepo := repository.NewReportRepository(db)
-	handler := api.NewHandler(reportRepo)
+	// Add CORS middleware
+	router.Use(cors.Default())
 
-	app.GET("/report", handler.FindOne)
-	app.GET("/reports", handler.FindAll)
-	app.GET("/reportbyid", handler.FindByID)
-	app.GET("/reportsbytimelt", handler.FindByTimeLT)
-	app.GET("/reportsbytimegt", handler.FindByTimeGT)
-	app.GET("/reportsbyuseragent", handler.FindByUserAgent)
+	// Setup routes
+	handlers.SetupRoutes(router, handler)
 
-	app.Run()
+	// Start the server
+	router.Run()
+}
+
+func getEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return fallback
 }
