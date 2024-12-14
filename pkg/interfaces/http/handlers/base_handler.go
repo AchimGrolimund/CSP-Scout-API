@@ -28,7 +28,7 @@ func RegisterRoutes(router *gin.Engine, service *application.Service) {
 func setupV1Routes(router *gin.RouterGroup, service *application.Service) {
 	// Reports CRUD routes
 	setupReportRoutesV1(router, service.Reports)
-	
+
 	// Statistics routes
 	setupStatisticsRoutesV1(router, service.Statistics)
 }
@@ -39,7 +39,7 @@ func setupV1Routes(router *gin.RouterGroup, service *application.Service) {
 func setupV2Routes(router *gin.RouterGroup, service *application.Service) {
 	// Reports CRUD routes
 	setupReportRoutesV2(router, service.Reports)
-	
+
 	// Statistics routes
 	setupStatisticsRoutesV2(router, service.Statistics)
 }

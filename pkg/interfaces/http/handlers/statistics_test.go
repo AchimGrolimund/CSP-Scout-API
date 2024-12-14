@@ -87,15 +87,15 @@ func TestGetTopIPsV1(t *testing.T) {
 			router.ServeHTTP(w, req)
 
 			assert.Equal(t, tt.expectedStatus, w.Code)
-			
+
 			var response interface{}
 			err := json.Unmarshal(w.Body.Bytes(), &response)
 			assert.NoError(t, err)
-			
+
 			expectedJSON, _ := json.Marshal(tt.expectedBody)
 			actualJSON, _ := json.Marshal(response)
 			assert.JSONEq(t, string(expectedJSON), string(actualJSON))
-			
+
 			mockService.AssertExpectations(t)
 		})
 	}
@@ -143,15 +143,15 @@ func TestGetTopViolatedDirectivesV1(t *testing.T) {
 			router.ServeHTTP(w, req)
 
 			assert.Equal(t, tt.expectedStatus, w.Code)
-			
+
 			var response interface{}
 			err := json.Unmarshal(w.Body.Bytes(), &response)
 			assert.NoError(t, err)
-			
+
 			expectedJSON, _ := json.Marshal(tt.expectedBody)
 			actualJSON, _ := json.Marshal(response)
 			assert.JSONEq(t, string(expectedJSON), string(actualJSON))
-			
+
 			mockService.AssertExpectations(t)
 		})
 	}
@@ -182,7 +182,7 @@ func TestV2Endpoints(t *testing.T) {
 			router.ServeHTTP(w, req)
 
 			assert.Equal(t, http.StatusNotImplemented, w.Code)
-			
+
 			var response map[string]string
 			err := json.Unmarshal(w.Body.Bytes(), &response)
 			assert.NoError(t, err)

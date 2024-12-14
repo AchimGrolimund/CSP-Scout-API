@@ -54,7 +54,7 @@ func setupReportTestRouter(service *MockReportsService) *gin.Engine {
 
 func TestCreateReportV1(t *testing.T) {
 	testID := primitive.NewObjectID()
-	
+
 	tests := []struct {
 		name           string
 		setupMock      func(*MockReportsService)
@@ -70,7 +70,7 @@ func TestCreateReportV1(t *testing.T) {
 			requestBody: domain.Report{
 				ID: testID,
 				Report: domain.ReportData{
-					DocumentUri:        "https://example.com",
+					DocumentUri:       "https://example.com",
 					ViolatedDirective: "script-src",
 					ClientIP:          "192.168.1.1",
 				},
@@ -79,7 +79,7 @@ func TestCreateReportV1(t *testing.T) {
 			expectedBody: domain.Report{
 				ID: testID,
 				Report: domain.ReportData{
-					DocumentUri:        "https://example.com",
+					DocumentUri:       "https://example.com",
 					ViolatedDirective: "script-src",
 					ClientIP:          "192.168.1.1",
 				},
@@ -147,7 +147,7 @@ func TestCreateReportV1(t *testing.T) {
 
 func TestGetReportV1(t *testing.T) {
 	testID := primitive.NewObjectID()
-	
+
 	tests := []struct {
 		name           string
 		setupMock      func(*MockReportsService)
@@ -161,7 +161,7 @@ func TestGetReportV1(t *testing.T) {
 				m.On("GetReport", mock.Anything, testID.Hex()).Return(&domain.Report{
 					ID: testID,
 					Report: domain.ReportData{
-						DocumentUri:        "https://example.com",
+						DocumentUri:       "https://example.com",
 						ViolatedDirective: "script-src",
 						ClientIP:          "192.168.1.1",
 					},
@@ -172,7 +172,7 @@ func TestGetReportV1(t *testing.T) {
 			expectedBody: domain.Report{
 				ID: testID,
 				Report: domain.ReportData{
-					DocumentUri:        "https://example.com",
+					DocumentUri:       "https://example.com",
 					ViolatedDirective: "script-src",
 					ClientIP:          "192.168.1.1",
 				},
@@ -223,7 +223,7 @@ func TestGetReportV1(t *testing.T) {
 
 func TestListReportsV1(t *testing.T) {
 	testID := primitive.NewObjectID()
-	
+
 	tests := []struct {
 		name           string
 		setupMock      func(*MockReportsService)
@@ -237,7 +237,7 @@ func TestListReportsV1(t *testing.T) {
 					{
 						ID: testID,
 						Report: domain.ReportData{
-							DocumentUri:        "https://example.com",
+							DocumentUri:       "https://example.com",
 							ViolatedDirective: "script-src",
 							ClientIP:          "192.168.1.1",
 						},
@@ -249,7 +249,7 @@ func TestListReportsV1(t *testing.T) {
 				{
 					ID: testID,
 					Report: domain.ReportData{
-						DocumentUri:        "https://example.com",
+						DocumentUri:       "https://example.com",
 						ViolatedDirective: "script-src",
 						ClientIP:          "192.168.1.1",
 					},
