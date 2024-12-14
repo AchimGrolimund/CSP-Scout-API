@@ -15,15 +15,17 @@ The project follows a DDD (Domain-Driven Design) architecture:
 │   ├── application/         # Application services
 │   ├── infrastructure/      # Infrastructure implementations (MongoDB)
 │   └── interfaces/          # HTTP handlers and routes
-└── configs/                 # Configuration files
+├── configs/                 # Configuration files
+└── docker/                  # Docker configuration
 ```
 
 ## Technologies Used
 
 - Go 1.22+
 - Gin Web Framework
-- MongoDB Driver v1.13
+- MongoDB Driver
 - Domain-Driven Design principles
+- Testify (testing framework)
 
 ## Prerequisites
 
@@ -36,10 +38,10 @@ The project follows a DDD (Domain-Driven Design) architecture:
 Copy the `.local.env` file in the `configs` directory and adjust the values according to your environment:
 
 ```env
-MONGODB_URI=mongodb://localhost:27017
-MONGODB_DATABASE=csp_scout
+MONGODB_URI=mongodb://localhost:27017/
+MONGODB_DATABASE=csp-report
 MONGODB_COLLECTION=reports
-SERVER_PORT=8080
+SERVER_PORT=8081
 ```
 
 ## Running the Application
@@ -52,6 +54,8 @@ SERVER_PORT=8080
 go run cmd/csp-scout-api/main.go
 ```
 
+The server will start on the configured port (default: 8081).
+
 ## API Endpoints
 
 ### Reports
@@ -60,27 +64,86 @@ go run cmd/csp-scout-api/main.go
 - `GET /api/v1/reports` - List all CSP reports
 - `GET /api/v1/reports/:id` - Get a specific CSP report by ID
 
-## Report Model
+### Statistics
+
+- `GET /api/v1/statistics/top-ips` - Get the most frequent client IPs
+- `GET /api/v1/statistics/top-directives` - Get the most violated CSP directives
+
+## Data Models
+
+### Report Model
 
 ```go
 type ReportData struct {
-    DocumentUri        string
-    Referrer          string
-    ViolatedDirective string
-    EffectiveDirective string
-    OriginalPolicy    string
-    Disposition       string
-    BlockedUri        string
-    LineNumber        int
-    SourceFile        string
-    StatusCode        int
-    ScriptSample      string
-    ClientIP          string
-    UserAgent         string
-    ReportTime        int
+    DocumentUri        string `json:"documenturi"`
+    Referrer          string `json:"referrer"`
+    ViolatedDirective string `json:"violateddirective"`
+    EffectiveDirective string `json:"effectivedirective"`
+    OriginalPolicy    string `json:"originalpolicy"`
+    Disposition       string `json:"disposition"`
+    BlockedUri        string `json:"blockeduri"`
+    LineNumber        int    `json:"linenumber"`
+    SourceFile        string `json:"sourcefile"`
+    StatusCode        int    `json:"statuscode"`
+    ScriptSample      string `json:"scriptsample"`
+    ClientIP          string `json:"clientip"`
+    UserAgent         string `json:"useragent"`
+    ReportTime        int    `json:"reporttime"`
 }
 
 type Report struct {
-    ID     string
-    Report ReportData
+    ID     primitive.ObjectID `json:"_id"`
+    Report ReportData         `json:"report"`
 }
+```
+
+### Statistics Models
+
+```go
+type TopIPResult struct {
+    IP    string `json:"ip"`
+    Count int    `json:"count"`
+}
+
+type TopDirectiveResult struct {
+    Directive string `json:"directive"`
+    Count     int    `json:"count"`
+}
+```
+
+## Testing
+
+The project includes comprehensive test suites for the API handlers. Run the tests using:
+
+```bash
+go test ./... -v
+```
+
+Test coverage includes:
+- Report creation, retrieval, and listing
+- Statistics endpoints
+- Error handling
+- Input validation
+- V2 endpoint placeholders
+
+## API Versioning
+
+The API supports versioning through URL prefixes:
+- V1: Currently implemented (`/api/v1/...`)
+- V2: Placeholder endpoints for future implementation (`/api/v2/...`)
+
+## Error Handling
+
+The API returns appropriate HTTP status codes and JSON error messages:
+- 200: Successful operation
+- 201: Resource created
+- 400: Bad request / Invalid input
+- 404: Resource not found
+- 500: Internal server error
+
+Example error response:
+```json
+{
+    "error": "error message here"
+}
+```
