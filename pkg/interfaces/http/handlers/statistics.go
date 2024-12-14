@@ -8,17 +8,17 @@ import (
 )
 
 type StatisticsHandler struct {
-	service *application.ReportService
+	service application.StatisticsService
 }
 
-func NewStatisticsHandler(service *application.ReportService) *StatisticsHandler {
+func NewStatisticsHandler(service application.StatisticsService) *StatisticsHandler {
 	return &StatisticsHandler{
 		service: service,
 	}
 }
 
 // V1 Routes
-func setupStatisticsRoutesV1(router *gin.RouterGroup, service *application.ReportService) {
+func setupStatisticsRoutesV1(router *gin.RouterGroup, service application.StatisticsService) {
 	handler := NewStatisticsHandler(service)
 	stats := router.Group("/statistics")
 	{
@@ -28,7 +28,7 @@ func setupStatisticsRoutesV1(router *gin.RouterGroup, service *application.Repor
 }
 
 // V2 Routes (for future implementation)
-func setupStatisticsRoutesV2(router *gin.RouterGroup, service *application.ReportService) {
+func setupStatisticsRoutesV2(router *gin.RouterGroup, service application.StatisticsService) {
 	handler := NewStatisticsHandler(service)
 	stats := router.Group("/statistics")
 	{

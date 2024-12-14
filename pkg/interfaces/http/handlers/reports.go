@@ -9,17 +9,17 @@ import (
 )
 
 type ReportsHandler struct {
-	service *application.ReportService
+	service application.ReportsService
 }
 
-func NewReportsHandler(service *application.ReportService) *ReportsHandler {
+func NewReportsHandler(service application.ReportsService) *ReportsHandler {
 	return &ReportsHandler{
 		service: service,
 	}
 }
 
 // V1 Routes
-func setupReportRoutesV1(router *gin.RouterGroup, service *application.ReportService) {
+func setupReportRoutesV1(router *gin.RouterGroup, service application.ReportsService) {
 	handler := NewReportsHandler(service)
 	reports := router.Group("/reports")
 	{
@@ -30,7 +30,7 @@ func setupReportRoutesV1(router *gin.RouterGroup, service *application.ReportSer
 }
 
 // V2 Routes (for future implementation)
-func setupReportRoutesV2(router *gin.RouterGroup, service *application.ReportService) {
+func setupReportRoutesV2(router *gin.RouterGroup, service application.ReportsService) {
 	handler := NewReportsHandler(service)
 	reports := router.Group("/reports")
 	{

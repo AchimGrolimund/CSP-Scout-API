@@ -14,7 +14,7 @@ const (
 )
 
 // RegisterRoutes configures all API routes with versioning
-func RegisterRoutes(router *gin.Engine, service *application.ReportService) {
+func RegisterRoutes(router *gin.Engine, service *application.Service) {
 	// Register V1 routes
 	apiV1 := router.Group("/api/v1")
 	setupV1Routes(apiV1, service)
@@ -25,22 +25,22 @@ func RegisterRoutes(router *gin.Engine, service *application.ReportService) {
 }
 
 // setupV1Routes configures all V1 API routes
-func setupV1Routes(router *gin.RouterGroup, service *application.ReportService) {
+func setupV1Routes(router *gin.RouterGroup, service *application.Service) {
 	// Reports CRUD routes
-	setupReportRoutesV1(router, service)
+	setupReportRoutesV1(router, service.Reports)
 	
 	// Statistics routes
-	setupStatisticsRoutesV1(router, service)
+	setupStatisticsRoutesV1(router, service.Statistics)
 }
 
 // setupV2Routes configures all V2 API routes
 // Uncomment and implement when V2 is needed
 /*
-func setupV2Routes(router *gin.RouterGroup, service *application.ReportService) {
+func setupV2Routes(router *gin.RouterGroup, service *application.Service) {
 	// Reports CRUD routes
-	setupReportRoutesV2(router, service)
+	setupReportRoutesV2(router, service.Reports)
 	
 	// Statistics routes
-	setupStatisticsRoutesV2(router, service)
+	setupStatisticsRoutesV2(router, service.Statistics)
 }
 */

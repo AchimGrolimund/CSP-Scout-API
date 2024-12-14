@@ -35,7 +35,7 @@ func main() {
 	}
 
 	// Create service
-	service := application.NewReportService(repo)
+	service := application.NewService(repo)
 
 	// Initialize Gin router
 	router := gin.Default()
