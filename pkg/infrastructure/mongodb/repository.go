@@ -2,9 +2,8 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
-	"time"
 
+	"github.com/AchimGrolimund/CSP-Scout-API/pkg/application"
 	"github.com/AchimGrolimund/CSP-Scout-API/pkg/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,18 +18,9 @@ type MongoRepository struct {
 }
 
 func NewMongoRepository(uri, database, collection string) (*MongoRepository, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to MongoDB: %v", err)
-	}
-
-	// Ping the database
-	err = client.Ping(ctx, nil)
-	if err != nil {
-		return nil, fmt.Errorf("failed to ping MongoDB: %v", err)
+		return nil, err
 	}
 
 	return &MongoRepository{
@@ -40,53 +30,97 @@ func NewMongoRepository(uri, database, collection string) (*MongoRepository, err
 	}, nil
 }
 
-func (r *MongoRepository) Create(ctx context.Context, report domain.Report) error {
-	collection := r.client.Database(r.database).Collection(r.collection)
-
-	_, err := collection.InsertOne(ctx, report)
-	if err != nil {
-		return fmt.Errorf("failed to insert report: %v", err)
-	}
-
-	return nil
+func (r *MongoRepository) CreateReport(ctx context.Context, report *domain.Report) error {
+	_, err := r.client.Database(r.database).Collection(r.collection).InsertOne(ctx, report)
+	return err
 }
 
-func (r *MongoRepository) GetByID(ctx context.Context, id string) (*domain.Report, error) {
-	collection := r.client.Database(r.database).Collection(r.collection)
-
-	// Convert string ID to ObjectID
+func (r *MongoRepository) GetReport(ctx context.Context, id string) (*domain.Report, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid ID format: %v", err)
+		return nil, err
 	}
 
 	var report domain.Report
-	err = collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&report)
+	err = r.client.Database(r.database).Collection(r.collection).FindOne(ctx, bson.M{"_id": objectID}).Decode(&report)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, nil
-		}
-		return nil, fmt.Errorf("failed to get report: %v", err)
+		return nil, err
 	}
 
 	return &report, nil
 }
 
-func (r *MongoRepository) List(ctx context.Context) ([]domain.Report, error) {
-	collection := r.client.Database(r.database).Collection(r.collection)
-
-	cursor, err := collection.Find(ctx, bson.M{})
+func (r *MongoRepository) ListReports(ctx context.Context) ([]domain.Report, error) {
+	cursor, err := r.client.Database(r.database).Collection(r.collection).Find(ctx, bson.M{})
 	if err != nil {
-		return nil, fmt.Errorf("failed to list reports: %v", err)
+		return nil, err
 	}
 	defer cursor.Close(ctx)
 
 	var reports []domain.Report
-	if err = cursor.All(ctx, &reports); err != nil {
-		return nil, fmt.Errorf("failed to decode reports: %v", err)
+	if err := cursor.All(ctx, &reports); err != nil {
+		return nil, err
 	}
 
 	return reports, nil
+}
+
+func (r *MongoRepository) GetTopIPs(ctx context.Context) ([]application.TopIPResult, error) {
+	pipeline := mongo.Pipeline{
+		{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$report.clientip"},
+			{Key: "count", Value: bson.D{{Key: "$sum", Value: 1}}},
+		}}},
+		{{Key: "$sort", Value: bson.D{{Key: "count", Value: -1}}}},
+		{{Key: "$limit", Value: 20}},
+		{{Key: "$project", Value: bson.D{
+			{Key: "ip", Value: "$_id"},
+			{Key: "count", Value: 1},
+			{Key: "_id", Value: 0},
+		}}},
+	}
+
+	cursor, err := r.client.Database(r.database).Collection(r.collection).Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var results []application.TopIPResult
+	if err := cursor.All(ctx, &results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
+func (r *MongoRepository) GetTopViolatedDirectives(ctx context.Context) ([]application.TopDirectiveResult, error) {
+	pipeline := mongo.Pipeline{
+		{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$report.violateddirective"},
+			{Key: "count", Value: bson.D{{Key: "$sum", Value: 1}}},
+		}}},
+		{{Key: "$sort", Value: bson.D{{Key: "count", Value: -1}}}},
+		{{Key: "$limit", Value: 10}},
+		{{Key: "$project", Value: bson.D{
+			{Key: "directive", Value: "$_id"},
+			{Key: "count", Value: 1},
+			{Key: "_id", Value: 0},
+		}}},
+	}
+
+	cursor, err := r.client.Database(r.database).Collection(r.collection).Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var results []application.TopDirectiveResult
+	if err := cursor.All(ctx, &results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
 func (r *MongoRepository) Close(ctx context.Context) error {
