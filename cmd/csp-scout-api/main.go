@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -46,8 +47,14 @@ func main() {
 	// Setup routes
 	handlers.RegisterRoutes(router, service)
 
-	// Start the server
-	router.Run()
+	// Get server port from environment variables
+	port := getEnv("SERVER_PORT", "8080")
+
+	// Start the server with configured port
+	log.Printf("Server starting on port %s", port)
+	if err := router.Run(fmt.Sprintf(":%s", port)); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
 
 func getEnv(key, fallback string) string {
