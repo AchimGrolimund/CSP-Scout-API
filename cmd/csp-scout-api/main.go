@@ -34,9 +34,8 @@ func main() {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
 
-	// Create service and handler
+	// Create service
 	service := application.NewReportService(repo)
-	handler := handlers.NewReportHandler(service)
 
 	// Initialize Gin router
 	router := gin.Default()
@@ -45,7 +44,7 @@ func main() {
 	router.Use(cors.Default())
 
 	// Setup routes
-	handlers.SetupRoutes(router, handler)
+	handlers.RegisterRoutes(router, service)
 
 	// Start the server
 	router.Run()
